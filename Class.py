@@ -2,7 +2,6 @@ import math
 import pygame as pg
 pg.init()
 
-FONT = pg.font.Font(None, 32)
 inactiveColor = (100,100,100)
 activeColor = (0,0,0)
 
@@ -31,11 +30,20 @@ class Simulation:
                 self.__list = []
     def drawField(self, screen):
         if self.status:
+            self.text1 = TextBox(self.__x+72, self.__y+67, '100 cm.', fontSize= 18)
+            self.text2 = TextBox(self.__x+self.__distance+86, self.__y+67, str(self.__distance-100+7.5)+' cm.',fontSize= 18)
             pg.draw.line(screen,(100,100,100),(self.__x+200,self.__y+70),(self.__x+200,self.__y-200+70),1)
             pg.draw.rect(screen,(100,100,100),(self.__x+(self.__distance*2),self.__y,26,70))
             pg.draw.polygon(screen, (100, 100, 100), ((self.__x,self.__y+70),(self.__x,self.__y),(self.__x-44,self.__y+70)))
+            pg.draw.line(screen,(100,100,100), (self.__x, self.__y+80), ((self.__x+(self.__distance*2)+13), self.__y+80))
+            pg.draw.line(screen,(100,100,100), (self.__x, self.__y+75), (self.__x, self.__y+85))
+            pg.draw.line(screen,(100,100,100), ((self.__x+(self.__distance*2)+13), self.__y+75), ((self.__x+(self.__distance*2)+13), self.__y+85))
+            pg.draw.line(screen,(100,100,100), (self.__x+200, self.__y+75), (self.__x+200, self.__y+85))
+            self.text1.draw(screen)
+            self.text2.draw(screen)
+
     def drawRect(self, screen):
-        pg.draw.rect(screen,(100,100,100),(self.__x-54,self.__y-280,550,370),2)
+        pg.draw.rect(screen,(100,100,100),(self.__x-115,self.__y-270,670,370),2)
     def changeVelocity(self, velocity):
         self.__velocity = velocity
     def changeDistance(self, distance):
@@ -65,21 +73,23 @@ class Calculator:
         pg.draw.rect(screen,(100,100,100),(self.__x,self.__y,670,220),2)
 
 class TextBox:
-    def __init__(self, x, y, text='', color=(0,0,0,)):
+    def __init__(self, x, y, text='', color=(0,0,0,), fontSize = 32):
         self.color = color
-        self.text = FONT.render(text, True, self.color)
+        self.font = pg.font.Font(None, fontSize)
+        self.text = self.font.render(text, True, self.color)
         self.textRect = (x, y)
     def draw(self,screen):
         screen.blit(self.text, self.textRect)
     def changeText(self,text):
-        self.text = FONT.render(text, True, self.color)
+        self.text = self.font.render(text, True, self.color)
 
 class InputBox:
-    def __init__(self, x, y, w, h, text=''):
+    def __init__(self, x, y, w, h, text='', fontSize = 32):
         self.rect = pg.Rect(x, y, w, h)
         self.color = inactiveColor
         self.text = text
-        self.txt_surface = FONT.render(text, True, self.color)
+        self.font = pg.font.Font(None, fontSize)
+        self.txt_surface = self.font.render(text, True, self.color)
         self.active = False
 
     def handleEvent(self, event):
@@ -96,14 +106,14 @@ class InputBox:
                     self.text = self.text[:-1]
                 else:
                     self.text += event.unicode
-                self.txt_surface = FONT.render(self.text, True, self.color)
+                self.txt_surface = self.font.render(self.text, True, self.color)
     
     def numberCheck(self):
         if(self.text[-1:].isnumeric()):
             pass
         else:
             self.text = self.text[:-1]
-            self.txt_surface = FONT.render(self.text, True, self.color)
+            self.txt_surface = self.font.render(self.text, True, self.color)
 
     def update(self):
         width = max(200, self.txt_surface.get_width()+10)
@@ -114,12 +124,13 @@ class InputBox:
         pg.draw.rect(screen, self.color, self.rect, 2)
 
 class Button:
-    def __init__(self, x, y, text=''):
+    def __init__(self, x, y, text='', fontSize = 32):
         self.color = inactiveColor
         self.text = text
         self.x = x
         self.y = y
-        self.txt_surface = FONT.render(text, True, self.color)
+        self.font = pg.font.Font(None, fontSize)
+        self.txt_surface = self.font.render(text, True, self.color)
         self.rect = pg.Rect(self.x, self.y, self.txt_surface.get_width()+10, self.txt_surface.get_height()+10)
         self.status = False
     
@@ -127,10 +138,10 @@ class Button:
         if event.type == pg.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 self.color = activeColor
-                self.txt_surface = FONT.render(self.text, True, self.color)
+                self.txt_surface = self.font.render(self.text, True, self.color)
                 return True
         self.color = inactiveColor
-        self.txt_surface = FONT.render(self.text, True, self.color)
+        self.txt_surface = self.font.render(self.text, True, self.color)
         return False
     
     def draw(self, screen):

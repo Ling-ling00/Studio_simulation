@@ -152,34 +152,34 @@ field = Sanam(150,290,0)
 calculate = Calculate()
 run = True
 
-# while run:
-#     screen.fill((255,255,255))
-#     if button.status:
-#         squatBall.drawProjectile(screen)
-#         field.drawSanam(screen)
-#     button.draw(screen)
-#     for text in text_boxes:
-#         text.draw(screen)
-#     for box in input_boxes:
-#         box.draw(screen)
-#     pg.time.delay(10)
-#     pg.display.update()
+while run:
+    screen.fill((255,255,255))
+    if button.status:
+        squatBall.drawProjectile(screen)
+        field.drawSanam(screen)
+    button.draw(screen)
+    for text in text_boxes:
+        text.draw(screen)
+    for box in input_boxes:
+        box.draw(screen)
+    pg.time.delay(10)
+    pg.display.update()
 
-#     for event in pg.event.get(): # ทำการ Check event ต่างๆที่เกิดขึ้น
-#         for box in input_boxes:
-#             box.handleEvent(event)
-#             box.numberCheck()
-#         if button.isMousePress(event) and input_box1.text != '' and input_box2.text != '':
-#             button.status = True
-#             calculate.changeDistance(float(input_box1.text),float(input_box2.text))
-#             squatBall.changeVelocity(calculate.velocityCalculate())
-#             field.changeDistance(float(input_box2.text))
-#             returnText3 = 'Xrobot  = ' + str(calculate.distanceXCalculate()) + ' cm.'
-#             returnText4 = 'Voltage = ' + str(calculate.voltageCalculate()) + ' V.'
-#             text3.changeText(returnText3)
-#             text4.changeText(returnText4)
-#         if event.type == pg.QUIT: 
-#             pg.quit()
-#             exit()
+    for event in pg.event.get(): # ทำการ Check event ต่างๆที่เกิดขึ้น
+        for box in input_boxes:
+            box.handleEvent(event)
+            box.numberCheck()
+        if button.isMousePress(event) and input_box1.text != '' and input_box2.text != '':
+            button.status = True
+            calculate.changeDistance(float(input_box1.text),float(input_box2.text))
+            squatBall.changeVelocity(calculate.velocityCalculate())
+            field.changeDistance(float(input_box2.text))
+            returnText3 = 'Xrobot  = ' + str(calculate.distanceXCalculate()) + ' cm.'
+            returnText4 = 'Voltage = ' + str(calculate.voltageCalculate()) + ' V.'
+            text3.changeText(returnText3)
+            text4.changeText(returnText4)
+        if event.type == pg.QUIT: 
+            pg.quit()
+            exit()
 
 
