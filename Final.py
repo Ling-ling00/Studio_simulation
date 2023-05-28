@@ -7,19 +7,23 @@ screen = pg.display.set_mode((win_x, win_y))
 FONT = pg.font.Font(None, 32)
 error = True
 
-scene1 = Class.Simulation(180,290)
-scene2 = Class.Calculator(65, 400)
+img = ['Xtarget_2\\2.png', 'Xtarget_2\\4.png', 'Xtarget_2\\6.png', 'Xtarget_2\\7.png']
+scene1 = Class.Simulation(65, 50)
+scene2 = Class.Calculator(65, 430)
+scene3 = Class.Manual(img,0,0)
+main = Class.MainWindow(scene1,scene2,scene3)
 
 while True:
     screen.fill((255,255,255))
-    scene1.drawProjectile(5, screen)
-    scene2.draw(screen)
+    main.main(5,screen)
+    # scene3.draw(screen)
 
     pg.time.delay(10)
     pg.display.update()
 
     for event in pg.event.get():
-        scene2.updateEvent(event)
+        main.mainUpdateEvent(event)
+        # scene3.updateEvent(event)
         if event.type == pg.QUIT: 
             pg.quit()
             exit() 

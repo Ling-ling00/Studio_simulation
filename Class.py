@@ -5,13 +5,37 @@ pg.init()
 inactiveColor = (100,100,100)
 activeColor = (0,0,0)
 
+class MainWindow():
+    def __init__(self, simulationWindow, calculatorWindow, manualWindow):
+        self.__simulationWindow = simulationWindow
+        self.__calculatorWindow = calculatorWindow
+        self.__manualWindow = manualWindow
+        self.__status = [0, 0, 0]
+    def main(self, size, screen):
+        if self.__manualWindow.status == 0:
+            self.__simulationWindow.drawProjectile(size, screen)
+            self.__calculatorWindow.draw(screen)
+            self.__manualWindow.drawMain(screen)
+            self.__simulationWindow.changeVelocity(self.__status[1])
+            self.__simulationWindow.changeDistance(self.__status[2])
+            self.__simulationWindow.status = self.__status[0]
+        else:
+            self.__manualWindow.draw(screen)
+    def mainUpdateEvent(self, event):
+        if self.__manualWindow.status == 0:
+            self.__status = self.__calculatorWindow.updateEvent(event)
+            self.__manualWindow.updateEventMain(event)
+            print(self.__status[0])
+        else:
+            self.__manualWindow.updateEvent(event)
+
 class Simulation:
-    def __init__(self, x, y, distance = 200, velocity = 0):
-        self.__x = x
-        self.__y = y
+    def __init__(self, x, y):
+        self.__x = x+115
+        self.__y = y+270
         self.status = 0
-        self.__distance = distance
-        self.__velocity = velocity
+        self.__distance = 200
+        self.__velocity = 0
         self.__time = 1
         self.__list = []
 
@@ -94,8 +118,8 @@ class Calculator:
                     Sy = (float(self.targetY.text)+206.5)
                     Sx = float(self.targetX.text)
                     self.u = math.sqrt((Sy*9.8/100)/math.sin(2*rad))
-                    v = (Sy-0.6961)/0.6405
-                    x = Sx + 8.71
+                    v = (Sy-0.6961)/0.6405 #voltage
+                    x = Sx + 8.71 #distanceX
                     returnText3 = 'Xrobot  = ' + str(round(x,2)) + ' cm.'
                     returnText4 = 'Voltage = ' + str(round(v,2)) + ' V.'
                     self.robotX.changeText(returnText3)
@@ -104,10 +128,59 @@ class Calculator:
                     self.__status = 1
                     self.button.status = True
                 else:
-                    self.status = 3
+                    self.__status = 3
             else:
                 self.__status = 2
         return (self.__status,self.u,self.d)
+
+class Manual:
+    def __init__(self, img, x, y):
+        self.__x = x
+        self.__y = y
+        self.__img = []
+        self.next = Button(self.__x+700, self.__y+600, 'next', 32)
+        self.back = Button(self.__x+30, self.__y+600, 'back', 32)
+        self.manual = Button(self.__x+644, self.__y+20, 'manual', 32)
+        self.close = Button(self.__x+750, self.__y+20, 'X', 32, (255,0,0))
+        self.i = 0
+        self.status = 0
+        for i in img:
+            imp = pg.image.load(i).convert()
+            self.__img.append(imp)
+    def draw(self, screen):
+        if self.i == 0:
+            screen.blit(self.__img[self.i], (self.__x,self.__y))
+            self.next.draw(screen)
+            self.close.draw(screen)
+        elif self.i < len(self.__img)-1:
+            screen.blit(self.__img[self.i], (self.__x,self.__y))
+            self.next.draw(screen)
+            self.back.draw(screen)
+            self.close.draw(screen)
+        else:
+            screen.blit(self.__img[self.i], (self.__x,self.__y))
+            self.back.draw(screen)
+            self.close.draw(screen)
+    def updateEvent(self,event):
+        if self.i == 0:
+            if self.next.isMousePress(event):
+                self.i += 1
+        elif self.i < len(self.__img)-1:
+            if self.next.isMousePress(event):
+                self.i += 1
+            if self.back.isMousePress(event):
+                self.i -= 1
+        else:
+            if self.back.isMousePress(event):
+                self.i -= 1
+        if self.close.isMousePress(event):
+            self.status = 0
+            self.i = 0
+    def updateEventMain(self,event):
+        if self.manual.isMousePress(event):
+            self.status = 1
+    def drawMain(self, screen):
+        self.manual.draw(screen)
 
 class TextBox:
     def __init__(self, x, y, text='', color=(0,0,0,), fontSize = 32):
@@ -157,8 +230,10 @@ class InputBox:
         pg.draw.rect(screen, self.color, self.rect, 2)
 
 class Button:
-    def __init__(self, x, y, text='', fontSize = 32):
-        self.color = inactiveColor
+    def __init__(self, x, y, text='', fontSize = 32, inactiveColor = inactiveColor, activeColor = activeColor):
+        self.inactiveColor = inactiveColor
+        self.activeColor = activeColor
+        self.color = self.inactiveColor
         self.text = text
         self.x = x
         self.y = y
@@ -170,10 +245,10 @@ class Button:
     def isMousePress(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                self.color = activeColor
+                self.color = self.activeColor
                 self.txt_surface = self.font.render(self.text, True, self.color)
                 return True
-        self.color = inactiveColor
+        self.color = self.inactiveColor
         self.txt_surface = self.font.render(self.text, True, self.color)
         return False
     
