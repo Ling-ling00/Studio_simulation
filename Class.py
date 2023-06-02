@@ -34,7 +34,7 @@ class Simulation:
         self.__x = x+115
         self.__y = y+270
         self.status = 0
-        self.__distance = 200
+        self.__distance = 193.5
         self.__velocity = 0
         self.__time = 1
         self.__list = []
@@ -44,8 +44,8 @@ class Simulation:
         self.text6.draw(screen)
         pg.draw.rect(screen,(100,100,100),(self.__x-115,self.__y-270,670,370),2)
         if self.status == 1:
-            self.text1 = TextBox(self.__x+72, self.__y+67, '100 cm.', fontSize= 18)
-            self.text2 = TextBox(self.__x+self.__distance+86, self.__y+67, str(self.__distance-100+7.5)+' cm.',fontSize= 18)
+            self.text1 = TextBox(self.__x+72, self.__y+67, '100.00 cm.', fontSize= 18)
+            self.text2 = TextBox(self.__x+self.__distance+86, self.__y+67, '%.2f' %(self.__distance-100+6.50)+' cm.',fontSize= 18)
             pg.draw.line(screen,(100,100,100),(self.__x+200,self.__y+70),(self.__x+200,self.__y-200+70),1)
             pg.draw.rect(screen,(100,100,100),(self.__x+(self.__distance*2),self.__y,26,70))
             pg.draw.polygon(screen, (100, 100, 100), ((self.__x,self.__y+70),(self.__x,self.__y),(self.__x-44,self.__y+70)))
@@ -79,7 +79,7 @@ class Simulation:
         self.__velocity = velocity
 
     def changeDistance(self, distance):
-        self.__distance = distance+200
+        self.__distance = distance+193.5
 
 class Calculator:
     def __init__(self, x, y):
@@ -92,8 +92,8 @@ class Calculator:
         self.text1 = TextBox(self.__x+10, self.__y+70, 'Xtarget =                           cm.')
         self.text2 = TextBox(self.__x+10, self.__y+120, 'Ytarget =                           cm.')
         self.text3 = TextBox(self.__x+10, self.__y+15, 'Calculator',fontSize = 48)
-        self.text4 = TextBox(self.__x+10, self.__y+100, 'Please enter number between 0-80', (100,100,100), 18)
-        self.text5 = TextBox(self.__x+10, self.__y+150, 'Please enter number between 0-30', (100,100,100), 18)
+        self.text4 = TextBox(self.__x+10, self.__y+100, 'Please enter number between 0.00 - 50.00', (100,100,100), 18)
+        self.text5 = TextBox(self.__x+10, self.__y+150, 'Please enter number between 6.50 - 30.30', (100,100,100), 18)
         self.textBoxes = [self.text1, self.text2, self.text3, self.text4, self.text5, self.voltage, self.robotX]
         self.inputBoxes = [self.targetX, self.targetY]
         self.button = Button(self.__x+120, self.__y+170, 'Calculate')
@@ -113,15 +113,15 @@ class Calculator:
             box.numberCheck()
         if self.button.isMousePress(event):
             if self.targetX.text != '' and self.targetY.text != '':
-                if float(self.targetX.text)>=0 and float(self.targetX.text)<=80 and float(self.targetY.text)>=0 and float(self.targetY.text)<=30:
+                if float(self.targetX.text)>=0 and float(self.targetX.text)<=50 and float(self.targetY.text)>=6.5 and float(self.targetY.text)<=30.3:
                     rad = 60 / 360 * 2 * math.pi
-                    Sy = (float(self.targetY.text)+206.5)
+                    Sy = (float(self.targetY.text)+200)
                     Sx = float(self.targetX.text)
                     self.u = math.sqrt((Sy*9.8/100)/math.sin(2*rad))
-                    v = (Sy-0.6961)/0.6405 #voltage
-                    x = Sx + 8.71 #distanceX
-                    returnText3 = 'Xrobot  = ' + str(round(x,2)) + ' cm.'
-                    returnText4 = 'Voltage = ' + str(round(v,2)) + ' V.'
+                    v = (1.5575*Sy)-1.552 #voltage
+                    x = Sx - 0.93 + 15 #distanceX
+                    returnText3 = 'Xrobot  = ' + str(round(x,1)) + ' cm.'
+                    returnText4 = 'Voltage = ' + str(int(v)) + ' V.'
                     self.robotX.changeText(returnText3)
                     self.voltage.changeText(returnText4)
                     self.d = float(self.targetY.text)
