@@ -44,13 +44,13 @@ class Simulation:
         self.text6.draw(screen)
         pg.draw.rect(screen,(100,100,100),(self.__x-115,self.__y-270,670,370),2)
         if self.status == 1:
-            self.text1 = TextBox(self.__x+72, self.__y+67, '100.00 cm.', fontSize= 18)
+            self.text1 = TextBox(self.__x+72, self.__y+67, '105.00 cm.', fontSize= 18)
             self.text2 = TextBox(self.__x+self.__distance+86, self.__y+67, '%.2f' %(self.__distance-100+6.50)+' cm.',fontSize= 18)
             pg.draw.line(screen,(100,100,100),(self.__x+200,self.__y+70),(self.__x+200,self.__y-200+70),1)
             pg.draw.rect(screen,(100,100,100),(self.__x+(self.__distance*2),self.__y,26,70))
-            pg.draw.polygon(screen, (100, 100, 100), ((self.__x,self.__y+70),(self.__x,self.__y),(self.__x-44,self.__y+70)))
-            pg.draw.line(screen,(100,100,100), (self.__x, self.__y+80), ((self.__x+(self.__distance*2)+13), self.__y+80))
-            pg.draw.line(screen,(100,100,100), (self.__x, self.__y+75), (self.__x, self.__y+85))
+            pg.draw.polygon(screen, (100, 100, 100), ((self.__x-10,self.__y+70),(self.__x-10,self.__y),(self.__x-54,self.__y+70)))
+            pg.draw.line(screen,(100,100,100), (self.__x-10, self.__y+80), ((self.__x+(self.__distance*2)+13), self.__y+80))
+            pg.draw.line(screen,(100,100,100), (self.__x-10, self.__y+75), (self.__x-10, self.__y+85))
             pg.draw.line(screen,(100,100,100), ((self.__x+(self.__distance*2)+13), self.__y+75), ((self.__x+(self.__distance*2)+13), self.__y+85))
             pg.draw.line(screen,(100,100,100), (self.__x+200, self.__y+75), (self.__x+200, self.__y+85))
             self.text1.draw(screen)
@@ -96,13 +96,15 @@ class Calculator:
         self.text5 = TextBox(self.__x+10, self.__y+150, 'Please enter number between 6.50 - 30.30', (100,100,100), 18)
         self.textBoxes = [self.text1, self.text2, self.text3, self.text4, self.text5, self.voltage, self.robotX]
         self.inputBoxes = [self.targetX, self.targetY]
-        self.button = Button(self.__x+120, self.__y+170, 'Calculate')
+        self.button = Button(self.__x+110, self.__y+170, 'Calculate')
+        self.reset = Button(self.__x+240, self.__y+170, 'Reset')
         self.__status = 0
         self.u = 0
         self.d = 200
     def draw(self, screen):
         pg.draw.rect(screen,(100,100,100),(self.__x,self.__y,670,220),2)
         self.button.draw(screen)
+        self.reset.draw(screen)
         for i in self.textBoxes:
             i.draw(screen)
         for i in self.inputBoxes:
@@ -131,6 +133,14 @@ class Calculator:
                     self.__status = 3
             else:
                 self.__status = 2
+        if self.reset.isMousePress(event):
+            self.__status = 0
+            returnText3 = 'Xrobot  =  ___  cm.'
+            returnText4 = 'Voltage =  ___  V.'
+            self.targetX.text = ''
+            self.targetY.text = ''
+            self.robotX.changeText(returnText3)
+            self.voltage.changeText(returnText4)
         return (self.__status,self.u,self.d)
 
 class Manual:
@@ -140,7 +150,7 @@ class Manual:
         self.__img = []
         self.next = Button(self.__x+700, self.__y+600, 'next', 32)
         self.back = Button(self.__x+30, self.__y+600, 'back', 32)
-        self.manual = Button(self.__x+644, self.__y+20, 'manual', 32)
+        self.manual = Button(self.__x+589, self.__y+20, 'User Manual', 32)
         self.close = Button(self.__x+750, self.__y+20, 'X', 32, (255,0,0))
         self.i = 0
         self.status = 0

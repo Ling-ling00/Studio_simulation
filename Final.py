@@ -7,7 +7,7 @@ screen = pg.display.set_mode((win_x, win_y))
 FONT = pg.font.Font(None, 32)
 error = True
 
-img = ['Xtarget_2\\2.png', 'Xtarget_2\\4.png', 'Xtarget_2\\6.png', 'Xtarget_2\\7.png']
+img = ['Xtarget_2\\1.png', 'Xtarget_2\\2.png', 'Xtarget_2\\3.png', 'Xtarget_2\\4.png']
 scene1 = Class.Simulation(65, 50)
 scene2 = Class.Calculator(65, 430)
 scene3 = Class.Manual(img,0,0)
